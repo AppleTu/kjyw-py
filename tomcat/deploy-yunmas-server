@@ -1,0 +1,100 @@
+#! /bin/sh
+echo 'Author            :liangping'
+echo 'Version           :3.0'
+echo 'Last modified     :2020-07-08 14:30'
+echo 'Description       :单机多tomcat实例，自动部署war至tomcat/webapps,如果Tomcat处于运行中本脚本将会 kill 后重新部署启动！'
+echo 'execute command   :命令行参数赋值:deploy-yunmas-server {t0|t1} {biz|man|api|sms|redis|smstimer}'
+echo '##################### 自动部署说明 #####################################################'
+echo '/home/yunmas下建立如下目录：'
+echo '.'
+echo '├── deploy-yunmas          --本脚本存放目录'
+echo '├── appBase'
+echo '│   └── yunmas_biz.war     --新war存放目录'
+echo '├── dbbak'
+echo '└── tomcat     --第一组Tomcat存放根目录，一般是目前在线的旧版本在运行'
+echo '    ├── tomcat0'
+echo '    ├── tomcat1'
+echo '    ├── tomcat2'
+echo '    └── tomcat3'
+echo '------------------------------------------------------------------'
+echo '└── tomcat1     --第二组Tomcat存放根目录，一般是即将上线的新版本预部署'
+echo '    ├── tomcat0'
+echo '    ├── tomcat1'
+echo '    ├── tomcat2'
+echo '    └── tomcat3'
+echo '------------------------------------------------------------------'
+
+case "$1" in
+t0)
+if [ ! -n "$2" ] ;then
+    echo "◇ 请输入需要部署的应用名称:（例如：./deploy-yunmas-server t0 biz）"
+else
+    echo "♥ 开始自动部署:yunmas_$2 ########################################"
+    APPNAME=yunmas_$2
+    YUNMAS_PATH='/home/yunmas'
+    APPBASE_PATH=$YUNMAS_PATH'/appBase'
+    TOMCATROOT_PATH=$YUNMAS_PATH'/tomcat0'
+    DBBAK_PATH=$YUNMAS_PATH'/dbbak'
+
+    #循环部署tomcat
+    for TOMCATINSTANCE_PATH in $TOMCATROOT_PATH/*
+    do
+    if [ -d "$TOMCATINSTANCE_PATH" ]
+    then
+        echo "◇ $TOMCATINSTANCE_PATH is directory"
+        #备份webapps下的旧war包
+        mv $TOMCATINSTANCE_PATH/webapps/$APPNAME.war $DBBAK_PATH/$APPNAME.war.bak-$(date +%Y-%m-%d-%H%M%S%N)
+        #删除旧项目文件目录：yunmas_*
+        rm -rf $TOMCATINSTANCE_PATH/webapps/yunmas_*
+        #复制新的war包：yunmas_*.war 到webapps路径下
+        cp $APPBASE_PATH/$APPNAME.war $TOMCATINSTANCE_PATH/webapps/       
+        echo "√ ${TOMCATINSTANCE_PATH} 部署成功 ####################"
+    elif [ -f "$TOMCATINSTANCE_PATH" ]
+    then
+        echo "◇ $TOMCATINSTANCE_PATH is file"
+    fi
+    done
+        echo "√ ${TOMCATROOT_PATH} 组下实例部署结束####################"
+fi
+;;
+
+t1)
+if [ ! -n "$2" ] ;then
+    echo "◇ 请输入需要部署的应用名称:（例如：./deploy-yunmas t1 biz）"
+else
+    echo "♥ 开始自动部署:yunmas_$2"
+    APPNAME=yunmas_$2
+    YUNMAS_PATH='/home/yunmas'
+    APPBASE_PATH=$YUNMAS_PATH'/appBase'
+    TOMCATROOT_PATH=$YUNMAS_PATH'/tomcat1'
+    DBBAK_PATH=$YUNMAS_PATH'/dbbak'
+
+    #循环部署tomcat
+    for TOMCATINSTANCE_PATH in $TOMCATROOT_PATH/*
+    do
+    if [ -d "$TOMCATINSTANCE_PATH" ]
+    then
+        echo "◇ $TOMCATINSTANCE_PATH is directory"
+        #备份webapps下的旧war包
+        mv $TOMCATINSTANCE_PATH/webapps/$APPNAME.war $DBBAK_PATH/$APPNAME.war.bak-$(date +%Y-%m-%d-%H%M%S%N)
+        #删除旧项目文件目录：yunmas_*
+        rm -rf $TOMCATINSTANCE_PATH/webapps/yunmas_*
+        #复制新的war包：yunmas_*.war 到webapps路径下
+        cp $APPBASE_PATH/$APPNAME.war $TOMCATINSTANCE_PATH/webapps/       
+        echo "√ ${TOMCATINSTANCE_PATH} 部署成功####################"
+    elif [ -f "$TOMCATINSTANCE_PATH" ]
+    then
+        echo "◇ $TOMCATINSTANCE_PATH is file"
+    fi
+    done
+        echo "√ ${TOMCATROOT_PATH} 组下实例部署结束####################"
+fi
+;;
+
+*)
+echo "Usage: deploy-yunmas-server {t0|t1} {biz|man|api|sms|redis|smstimer}">&2
+exit 3
+;;
+esac
+
+
