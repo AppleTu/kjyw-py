@@ -62,18 +62,21 @@ class Server(object):
             try:
                 # 创建一个通道
                 self._transport = paramiko.Transport((self._ip, self._port))
-                self._transport.connect(username=self._username, password=self._password)
+                self._transport.connect(username=self._username,
+                                        password=self._password)
                 # 如果没有抛出异常说明连接成功，直接返回
                 _result += '%s con 创建成功' % self._ip
                 break
             # 这里对可能的异常如网络不通、链接超时、socket.error, socket.timeout直接输出
             except Exception as _e:
                 if self._try_times != 0:
-                    _result += '第%i次连接 %s 异常，原因：%s\n' % (3 - self._try_times, self._ip, _e)
+                    _result += '第%i次连接 %s 异常，原因：%s\n' % (3 - self._try_times,
+                                                         self._ip, _e)
                     _result += '进行重试\n'
                     self._try_times -= 1
                 else:
-                    _result += '第%i次连接 %s 异常，原因：%s\n' % (3 - self._try_times, self._ip, _e)
+                    _result += '第%i次连接 %s 异常，原因：%s\n' % (3 - self._try_times,
+                                                         self._ip, _e)
                     _result += '连接远程主机 %s 失败，结束重试' % self._ip
                     break
         return _result
@@ -117,27 +120,28 @@ class Server(object):
         :return: ls 目录检查的正确结果
         """
         try:
-            cmd='ls '+ remotefile
+            cmd = 'ls ' + remotefile
             _stdin, _stdout, _stderr = self._ssh.exec_command(cmd)
             # 返回decode的指令stdout和stderr信息
+            # print(_stdout.readline())
             return _stdout.read().decode()
         except Exception as _e:
-            return '"%s" 指令执行异常：%s' % (cmd,_e)
+            return '"%s" 指令执行异常：%s' % (cmd, _e)
 
     # 检查本地服务器上文件是否存在
-    def exists_local(self,localfile):
+    def exists_local(self, localfile):
         """
         检查本地服务器上的文件是否存在
         :param localfile: 本地的绝对路径+文件名
         :return: 检查结果
         """
-        if not os.path.exists(localfile ):
+        if not os.path.exists(localfile):
             return '检查本地文件路径不通过：%s 目录或文件不存在' % localfile
         else:
             return True
 
     # mv 远程服务器上文件至指定目录
-    def mv_remote(self,originalFile, targetFile):
+    def mv_remote(self, originalFile, targetFile):
         """
         备份原文件
         :param OriginalFile: 远端的绝对路径+文件名
@@ -145,14 +149,15 @@ class Server(object):
         :return: mv 命令执行的正确结果
         """
         try:
-            cmd ='mv '+ originalFile +' ' +targetFile+'.bak-'+self.get_current_time()
-            if self.exists_remote(originalFile)=="":
+            cmd = 'mv ' + originalFile + ' ' + targetFile + '.bak-' + self.get_current_time(
+            )
+            if self.exists_remote(originalFile) == "":
                 return '"%s" 指令未执行：原文件不存在！' % cmd
             else:
                 _stdin, _stdout, _stderr = self._ssh.exec_command(cmd)
                 # 返回decode的指令stdout和stderr信息
-                r=_stdout.read().decode()
-                if r=="":
+                r = _stdout.read().decode()
+                if r == "":
                     return '"%s" 指令执行成功' % cmd
                 else:
                     return '"%s" 指令执行失败：%s' % (cmd, r)
@@ -190,7 +195,7 @@ class Server(object):
         """
         try:
             self._sftp.put(localfile, remotefile)
-            return '✔ 上传成功:%s to %s ' % (localfile,remotefile)
+            return '✔ 上传成功:%s to %s ' % (localfile, remotefile)
         except Exception as e:
             return '✘ 上传异常(%s )：%s' % (localfile, e)
 
@@ -292,37 +297,43 @@ class Server(object):
         获取当前时间时间戳
         :return: 格式化后的时间戳
         """
-        t=time.time()
-        t_format=time.strftime('%Y-%m-%d-%H%M%S ',time.localtime(time.time()))
+        t = time.time()
+        t_format = time.strftime('%Y-%m-%d-%H%M%S ',
+                                 time.localtime(time.time()))
         return t_format
 
 
 if __name__ == '__main__':
-    conf_file = 'E:\\0yunmasfile\\yunmas_jiaoben\\1-putfile.txt'
-    local_dir='E:\\0yunmasfile\\yunmas-latest'
-    remote_dir='/home/yunmas/appBase'
+    # conf_file = 'E:\\test.txt'
+    conf_file = os.path.abspath(
+        os.path.dirname(__file__)) + os.sep + 'config.txt'  # 获取本地配置文件
+    local_dir = 'E:\\0yunmasfile\\yunmas-latest'
+    remote_dir = '/home/yunmas/appBase'
     remote_bak_dir = '/home/yunmas/dbbak'
 
     # 读取本地配置文件
     pd.read_csv(conf_file, sep=' ')
-    hostList = pd.read_table(conf_file, encoding='gb2312', delim_whitespace=True, index_col=0)
+    hostList = pd.read_table(conf_file,
+                             encoding='gb2312',
+                             delim_whitespace=True,
+                             index_col=0)
     for index, row in hostList.iterrows():
         print(index)
         # print("ip:" + row["ip"], "uname:" + row["uname"], "pwd:" + row["pwd"], "filename:" + row["filename"])  # 输出各列
-        ip=row["ip"]
-        username=str(row["uname"])
-        password=str(row["pwd"])
-        filename=str(row["filename"])
-        localfile=str(local_dir+os.sep+filename)
-        remotefile=str(remote_dir+'/'+filename)
-        remotebakfile=str(remote_bak_dir+'/'+filename)
+        ip = row["ip"]
+        username = str(row["uname"])
+        password = str(row["pwd"])
+        filename = str(row["filename"])
+        localfile = str(local_dir + os.sep + filename)
+        remotefile = str(remote_dir + os.sep + filename)
+        remotebakfile = str(remote_bak_dir + os.sep + filename)
 
-        s=Server(ip,22,username,password) # 实例化
-        check=s.exists_local(localfile) # 检查本地路径文件是否存在
-        if check==True: # 如果存在，继续
+        s = Server(ip, 22, username, password)  # 实例化
+        check = s.exists_local(localfile)  # 检查本地路径文件是否存在
+        if check == True:  # 如果存在，继续
             try:
-                print(s.connect())      # 创建一个连接
-                print(s.open_ssh())     # 开启ssh
+                print(s.connect())  # 创建一个连接
+                print(s.open_ssh())  # 开启ssh
                 print(s.open_sftp())  # 开启sftp
                 # print(s.mv_remote(remotefile,remotebakfile)) # 原文件至dbbak
                 # print(s.sftp_put(localfile,remotefile)) # 上传文件
@@ -336,14 +347,10 @@ if __name__ == '__main__':
                 print(s.channel_send_cmd('df'))
 
             except Exception as _e:
-                print( '异常：%s' % _e)
+                print('异常：%s' % _e)
             finally:
                 if s:
                     print(s.close())
                     del s
-        else: # 如果不存在，返回错误信息
+        else:  # 如果不存在，返回错误信息
             print(check)
-
-
-
-

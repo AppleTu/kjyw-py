@@ -1,13 +1,8 @@
 id	ip	uname	pwd	from	to	bakdir
-1	20.21.1.201	root	zjrc@201	D:\project\kjyw-py\ssh	/home	/home/bak
-2	20.21.1.117	root	zjrc@117	D:\project\kjyw-py\ssh	/home	/home/bak
-3	20.21.1.106	root	zjrc@106	D:\project\kjyw-py\ssh	/home	/home/bak
-4	20.21.1.107	root	zjrc@107	D:\project\kjyw-py\ssh	/home	/home/bak
-5	20.21.1.108	root	zjrc@108	D:\project\kjyw-py\ssh	/home	/home/bak
-6	20.21.1.110	root	zjrc@110	D:\project\kjyw-py\ssh	/home	/home/bak
-7	20.21.1.171	root	zjrc@171	D:\project\kjyw-py\ssh	/home	/home/bak
-8	20.21.1.150	root	zjrc@150	D:\project\kjyw-py\ssh	/home	/home/bak
-9	20.21.1.206	root	errortest	D:\project\kjyw-py\ssh	/home	/home/bak
-10	47.98.226.176	root	Liangping11.17	D:\project\kjyw-py\ssh	/home	/home/bak
-10	
-
+1	20.21.1.201	root	zjrc@201	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
+2	20.21.1.117	root	zjrc@117	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
+3	20.21.1.106	root	zjrc@106	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
+4	20.21.1.107	root	zjrc@107	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
+5	20.21.1.108	root	zjrc@108	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
+6	20.21.1.110	root	zjrc@110	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
+7	20.21.1.171	root	zjrc@171	D:\project\kjyw-py\ssh\cc.sh	/home/moni/cc.sh	/home/bak/cc.sh
