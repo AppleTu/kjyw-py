@@ -14,8 +14,13 @@ import pandas as pd
 import os
 
 curdir = os.path.abspath(os.path.dirname(__file__))  # 当前路径
-data_jktxt = pd.read_csv(curdir + os.sep + 'jk.txt')
-data_jktrani
+data_jktxt = pd.read_csv(curdir + os.sep + 'jk.txt',
+                         dtype=str).iloc[:, [9, 10, 17]]
+
+Frame = pd.DataFrame(data_jktxt.values, columns=["短信接入号", "短信签名", "流量"])
+Frame['短信接入号'] = Frame['短信接入号'].astype(str)
+Frame.to_csv(curdir + os.sep + "test.csv", encoding='utf-8-sig', index=False)
+
 # data_mas = pd.read_excel(curdir + os.sep + 'MASLIST20210223.xlsx')
 # data_jk = pd.read_excel(curdir + os.sep + 'jk.xlsx')
 # data_mas['集团编号'] = data_mas['集团编号'].astype(str)
